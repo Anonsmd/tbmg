@@ -3,6 +3,7 @@ package com.zstu.tbmg.service.Impl;
 import com.zstu.tbmg.dto.AdminUserDetails;
 import com.zstu.tbmg.mapper.db1.RoleMapper;
 import com.zstu.tbmg.mapper.db1.UserMapper;
+import com.zstu.tbmg.mapper.db2.CustomerLoginMapper;
 import com.zstu.tbmg.pojo.Role;
 import com.zstu.tbmg.pojo.RoleExample;
 import com.zstu.tbmg.pojo.User;
@@ -17,12 +18,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 
+@Transactional
 @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
@@ -30,11 +33,14 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private RoleMapper roleMapper;
     @Autowired
+    private CustomerLoginMapper customerLoginMapper;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Override
     public String login(String username, String password) throws Exception{
+        customerLoginMapper.selectByPrimaryKey(1);
         AdminUserDetails userDetails = null;
 //        User user = userMapper.selectByPrimaryKey(username);
         User user;
