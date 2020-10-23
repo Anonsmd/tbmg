@@ -10,7 +10,7 @@ import org.springframework.core.env.Environment;
 import java.beans.PropertyVetoException;
 
 
-@Configuration
+//@Configuration
 public class DBconfig {
     @Autowired
     private Environment env;
@@ -33,20 +33,20 @@ public class DBconfig {
         return dataSource;
     }
 
-//    @Bean(name="dataSource2")
-//    public ComboPooledDataSource dataSource2() throws PropertyVetoException {
-//        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-//        dataSource.setDriverClass(env.getProperty("ms.db2.driverClassName"));
-//        dataSource.setJdbcUrl(env.getProperty("ms.db2.url"));
-//        dataSource.setUser(env.getProperty("ms.db2.username"));
-//        dataSource.setPassword(env.getProperty("ms.db2.password"));
-//        dataSource.setMaxPoolSize(20);
-//        dataSource.setMinPoolSize(5);
-//        dataSource.setInitialPoolSize(10);
-//        dataSource.setMaxIdleTime(300);
-//        dataSource.setAcquireIncrement(5);
-//        dataSource.setIdleConnectionTestPeriod(60);
-//
-//        return dataSource;
-//    }
+    @Bean(name="dataSource2")
+    public ComboPooledDataSource dataSource2() throws PropertyVetoException {
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        dataSource.setDriverClass(env.getProperty("ms.db2.driverClassName"));
+        dataSource.setJdbcUrl(env.getProperty("ms.db2.url"));
+        dataSource.setUser(env.getProperty("ms.db2.username"));
+        dataSource.setPassword(env.getProperty("ms.db2.password"));
+        dataSource.setMaxPoolSize(20);
+        dataSource.setMinPoolSize(5);
+        dataSource.setInitialPoolSize(10);
+        dataSource.setMaxIdleTime(300);
+        dataSource.setAcquireIncrement(5);
+        dataSource.setIdleConnectionTestPeriod(60);
+
+        return dataSource;
+    }
 }

@@ -10,14 +10,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import javax.annotation.Resource;
+import javax.annotation.Resources;
 import javax.sql.DataSource;
 
-@Configuration
-@ComponentScan
+//@Configuration
+//@ComponentScan
 public class MyBatisConfig {
-    @Autowired
+    @Resource(name = "dataSource")
     private DataSource dataSource;
-    @Autowired
+    @Resource(name = "dataSource2")
     private DataSource dataSource2;
 
     @Bean(name = "sqlSessionFactory")
@@ -29,11 +31,11 @@ public class MyBatisConfig {
         return sessionFactory;
     }
 
-//    @Bean(name = "sqlSessionFactory2")
-//    public SqlSessionFactoryBean sqlSessionFactory2(ApplicationContext applicationContext) throws Exception {
-//        SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-//        sessionFactory.setDataSource(dataSource);
-//        sessionFactory.setMapperLocations(applicationContext.getResources("classpath*:mapper2/*.xml"));
-//        return sessionFactory;
-//    }
+    @Bean(name = "sqlSessionFactory2")
+    public SqlSessionFactoryBean sqlSessionFactory2(ApplicationContext applicationContext) throws Exception {
+        SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource2);
+        sessionFactory.setMapperLocations(applicationContext.getResources("classpath*:mapper2/*.xml"));
+        return sessionFactory;
+    }
 }

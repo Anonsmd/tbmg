@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zstu.tbmg.mapper2.CustomerLoginMapper">
+<mapper namespace="com.zstu.tbmg.mapper.db2.CustomerLoginMapper">
   <resultMap id="BaseResultMap" type="com.zstu.tbmg.pojo.CustomerLogin">
     <!--
       WARNING - @mbg.generated

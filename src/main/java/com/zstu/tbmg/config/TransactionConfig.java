@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 
 import javax.sql.DataSource;
 
-@Configuration
-@ComponentScan
+//@Configuration
+//@ComponentScan
 public class TransactionConfig implements TransactionManagementConfigurer {
 //public class TransactionConfig {
     @Autowired
@@ -27,10 +27,10 @@ public class TransactionConfig implements TransactionManagementConfigurer {
         return new DataSourceTransactionManager(dataSource);
     }
 
-//    @Bean(name = "transactionManager2")
-// //   @Override
-//    public DataSourceTransactionManager  annotationDrivenTransactionManager2() {
-//        return new DataSourceTransactionManager(dataSource2);
-//    }
+    @Bean(name = "transactionManager2")
+ //   @Override
+    public DataSourceTransactionManager  annotationDrivenTransactionManager2() {
+        return new DataSourceTransactionManager(dataSource2);
+    }
 
 }

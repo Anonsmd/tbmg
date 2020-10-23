@@ -5,7 +5,7 @@ import com.zstu.tbmg.component.JwtAuthenticationTokenFilter;
 import com.zstu.tbmg.component.RestAuthenticationEntryPoint;
 import com.zstu.tbmg.component.RestfulAccessDeniedHandler;
 import com.zstu.tbmg.dto.AdminUserDetails;
-import com.zstu.tbmg.mapper.RoleMapper;
+import com.zstu.tbmg.mapper.db1.RoleMapper;
 import com.zstu.tbmg.pojo.Role;
 import com.zstu.tbmg.pojo.RoleExample;
 import com.zstu.tbmg.pojo.User;
@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js",
                         "/swagger-resources/**",
-                        "/v2/api-docs/**"
+                        "/v2/api-docs/**","/druid/**"
                 )
                 .permitAll()
                 .regexMatchers("/[\\S]*\\.[\\d\\w]{1,8}").permitAll()

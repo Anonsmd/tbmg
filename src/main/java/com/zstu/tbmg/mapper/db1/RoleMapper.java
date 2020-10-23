@@ -1,9 +1,8 @@
-package com.zstu.tbmg.mapper;
+package com.zstu.tbmg.mapper.db1;
 
 import com.zstu.tbmg.pojo.Role;
 import com.zstu.tbmg.pojo.RoleExample;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
