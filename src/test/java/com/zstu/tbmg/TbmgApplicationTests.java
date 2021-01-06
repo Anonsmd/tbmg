@@ -1,7 +1,7 @@
 package com.zstu.tbmg;
 
-import com.zstu.tbmg.mapper.db1.UserMapper;
-import com.zstu.tbmg.mapper.db2.CustomerLoginMapper;
+import com.zstu.tbmg.mapper.db2.ProductCategoryMapper;
+import com.zstu.tbmg.mapper.db2.ProductInfoMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,23 +11,28 @@ import org.springframework.transaction.annotation.Transactional;
 class TbmgApplicationTests {
 
     @Autowired
-    private UserMapper userMapper;
+    private ProductInfoMapper productInfoMapper;
     @Autowired
-    private CustomerLoginMapper customerLoginMapper;
-    
+    private ProductCategoryMapper productCategoryMapper;
     @Test
     void contextLoads() {
-        System.out.println(userMapper.selectByPrimaryKey("18e36cd7-053c-49e8-bb60-516600cabc40"));
-        System.out.println(customerLoginMapper.selectByPrimaryKey(1));
+        System.out.println("------------------------------------------------------------------------------");
+//        System.out.println(productInfoMapper.selectByPage(0,5));
+        System.out.println("------------------------------------------------------------------------------");
+        System.out.println(productInfoMapper.getTotal());
     }
 
     @Test
-    @Transactional
-    void contextLoads2() {
-        System.out.println(userMapper.selectByPrimaryKey("18e36cd7-053c-49e8-bb60-516600cabc40"));
-        System.out.println(customerLoginMapper.selectByPrimaryKey(1));
-        customerLoginMapper.deleteByPrimaryKey(1);
-        System.out.println(10/0);
+    void testForCategoryWithChildren(){
+        System.out.println(productCategoryMapper.selectAllWithChildren());
     }
+//    @Test
+//    @Transactional
+//    void contextLoads2() {
+//        System.out.println(userMapper.selectByPrimaryKey("18e36cd7-053c-49e8-bb60-516600cabc40"));
+//        System.out.println(customerLoginMapper.selectByPrimaryKey(1));
+//        customerLoginMapper.deleteByPrimaryKey(1);
+//        System.out.println(10/0);
+//    }
 
 }

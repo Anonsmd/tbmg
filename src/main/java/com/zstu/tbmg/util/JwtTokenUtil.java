@@ -1,7 +1,7 @@
 package com.zstu.tbmg.util;
 
 import com.zstu.tbmg.dto.AdminUserDetails;
-import com.zstu.tbmg.pojo.Role;
+import com.zstu.tbmg.pojo.ManagerRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -131,8 +131,8 @@ public class JwtTokenUtil {
         claims.put(CLAIM_KEY_USERNAME,userDetails.getUsername());
         claims.put(CLAIM_KEY_TIME,generateExpirationDate());
         List<String> list = new ArrayList<>();
-        for (Role record:userDetails.getPermissionList()){
-            list.add(record.getType());
+        for (ManagerRole record:userDetails.getPermissionList()){
+            list.add(record.getRoleType());
         }
         claims.put(CLAIM_KEY_ROLE,list);
         String token= generateToken(claims);

@@ -2,10 +2,11 @@ package com.zstu.tbmg.controller;
 
 
 import com.zstu.tbmg.api.CommonResult;
+import com.zstu.tbmg.dto.UserInfoDTO;
 import com.zstu.tbmg.dto.UserLoginDTO;
 import com.zstu.tbmg.dto.UserManageDTO;
 import com.zstu.tbmg.dto.UserRegisterAdminDTO;
-import com.zstu.tbmg.pojo.User;
+import com.zstu.tbmg.pojo.ManagerLogin;
 import com.zstu.tbmg.service.AdminService;
 import com.zstu.tbmg.util.JwtTokenUtil;
 import io.swagger.annotations.Api;
@@ -59,10 +60,41 @@ public class BaseController {
         try {
             token = adminService.login(userLoginDTO.getUsername(),userLoginDTO.getPassword());
         } catch (Exception e) {
+            e.printStackTrace();
             return CommonResult.failed(e.getMessage());
         }
         tokenMap.put("token", token);
         return CommonResult.success(tokenMap);
+    }
+
+    @ApiOperation(value = "登出")
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> logout(){
+        boolean answ;
+        try {
+            answ = adminService.logout(GetUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+        Map<String, Boolean> answMap = new HashMap<>();
+        answMap.put("isSuccess",answ);
+        return CommonResult.success(answMap);
+    }
+
+    @ApiOperation(value = "获取信息")
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> getInfo(){
+        UserInfoDTO answ;
+        try {
+            answ = adminService.getInfo(GetUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+        return CommonResult.success(answ);
     }
 
     @ApiOperation(value = "注册")
@@ -70,10 +102,11 @@ public class BaseController {
     @ResponseBody
     public ResponseEntity<Map<String,Object>> registerAdmin(@RequestBody UserRegisterAdminDTO userRegisterAdminDTO){
         System.out.println(userRegisterAdminDTO);
-        User user = null;
+        ManagerLogin user = null;
         try {
             user = adminService.register(userRegisterAdminDTO.ToUser(),userRegisterAdminDTO.getRoleType());
         } catch (Exception e) {
+            e.printStackTrace();
             return CommonResult.failed(e.getMessage());
         }
         return CommonResult.success(user);
@@ -84,14 +117,20 @@ public class BaseController {
     @ResponseBody
     public ResponseEntity<Map<String,Object>> managerUser(@RequestBody UserManageDTO userManageDTO){
         System.out.println(userManageDTO);
-        User user = null;
+        ManagerLogin user = null;
         try {
          //   user = adminService.register(userRegisterAdminDTO.ToUser(),userRegisterAdminDTO.getRoleType());
         } catch (Exception e) {
+            e.printStackTrace();
             return CommonResult.failed(e.getMessage());
         }
         return CommonResult.success(user);
     }
+
+
+
+
+
 
     @ApiOperation(value = "ADMIN")
     @RequestMapping(value = "/ADMIN", method = RequestMethod.GET)

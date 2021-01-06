@@ -22,7 +22,7 @@
             <property name="dateFormat" value="yyyy-MM-dd HH:mm:ss"/>
         </commentGenerator>
         <!-- 连接数据库 -->
-        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver" connectionURL="jdbc:mysql://49.232.3.90:3306/mccustomerdb?serverTimezone=UTC&amp;nullCatalogMeansCurrent=true" userId="anon" password="smd358SMD@" />
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver" connectionURL="jdbc:mysql://49.232.3.90:3306/tbmg?serverTimezone=UTC&amp;nullCatalogMeansCurrent=true" userId="anon" password="smd358SMD@" />
         <!-- 数值类型数据是否全部使用BigDecimal类型 -->
         <javaTypeResolver >
             <property name="forceBigDecimals" value="false" />
@@ -38,11 +38,15 @@
             <property name="isMergeable" value="false" />
         </sqlMapGenerator>
         <!-- 生成dao类 -->
-        <javaClientGenerator targetPackage="com.zstu.tbmg.mapper2" targetProject="src/main/java" type="XMLMAPPER">
+        <javaClientGenerator targetPackage="com.zstu.tbmg.mapper.db2" targetProject="src/main/java" type="XMLMAPPER">
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
         <!-- 需要生产po类的表 -->
-        <table tableName="customer_login" domainObjectName="CustomerLogin" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="false"></table>
-<!--        <table tableName="Role" domainObjectName="Role" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="true" selectByExampleQueryId="false"></table>-->
+        <table tableName="product_brand_info" domainObjectName="ProductBrandInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="product_category" domainObjectName="ProductCategory" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="product_comment" domainObjectName="ProductComment" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="product_info" domainObjectName="ProductInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="product_pic_info" domainObjectName="ProductPicInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="product_supplier_info" domainObjectName="ProductSupplierInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>
 </generatorConfiguration>

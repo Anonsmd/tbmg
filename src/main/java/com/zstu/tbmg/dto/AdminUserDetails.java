@@ -1,7 +1,7 @@
 package com.zstu.tbmg.dto;
 
-import com.zstu.tbmg.pojo.Role;
-import com.zstu.tbmg.pojo.User;
+import com.zstu.tbmg.pojo.ManagerLogin;
+import com.zstu.tbmg.pojo.ManagerRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,29 +13,29 @@ import java.util.stream.Collectors;
 
 @Component
 public class AdminUserDetails implements UserDetails {
-    private User umsAdmin;
-    private List<Role> permissionList;
+    private ManagerLogin umsAdmin;
+    private List<ManagerRole> permissionList;
 
-    public User getUmsAdmin() {
+    public ManagerLogin getUmsAdmin() {
         return umsAdmin;
     }
 
-    public void setUmsAdmin(User umsAdmin) {
+    public void setUmsAdmin(ManagerLogin umsAdmin) {
         this.umsAdmin = umsAdmin;
     }
 
-    public List<Role> getPermissionList() {
+    public List<ManagerRole> getPermissionList() {
         return permissionList;
     }
 
-    public void setPermissionList(List<Role> permissionList) {
+    public void setPermissionList(List<ManagerRole> permissionList) {
         this.permissionList = permissionList;
     }
 
     public AdminUserDetails(){
 
     }
-    public AdminUserDetails(User umsAdmin, List<Role> list) {
+    public AdminUserDetails(ManagerLogin umsAdmin, List<ManagerRole> list) {
         this.umsAdmin = umsAdmin;
         this.permissionList = list;
     }
@@ -45,8 +45,8 @@ public class AdminUserDetails implements UserDetails {
 //        System.out.println(permissionList.get(0));
         //返回当前用户的权限
         return permissionList.stream()
-                .filter(permission -> permission.getType()  !=null)
-                .map(permission ->new SimpleGrantedAuthority(permission.getType()))
+                .filter(permission -> permission.getRoleType()  !=null)
+                .map(permission ->new SimpleGrantedAuthority(permission.getRoleType()))
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +57,7 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return umsAdmin.getUsername();
+        return umsAdmin.getLoginName();
     }
 
     @Override

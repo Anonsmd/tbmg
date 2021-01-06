@@ -5,10 +5,9 @@ import com.zstu.tbmg.component.JwtAuthenticationTokenFilter;
 import com.zstu.tbmg.component.RestAuthenticationEntryPoint;
 import com.zstu.tbmg.component.RestfulAccessDeniedHandler;
 import com.zstu.tbmg.dto.AdminUserDetails;
-import com.zstu.tbmg.mapper.db1.RoleMapper;
-import com.zstu.tbmg.pojo.Role;
-import com.zstu.tbmg.pojo.RoleExample;
-import com.zstu.tbmg.pojo.User;
+import com.zstu.tbmg.mapper.db1.ManagerRoleMapper;
+import com.zstu.tbmg.pojo.ManagerLogin;
+import com.zstu.tbmg.pojo.ManagerRole;
 import com.zstu.tbmg.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AdminService adminService;
     @Autowired
-    private RoleMapper roleMapper;
+    private ManagerRoleMapper managerRoleMapper;
     @Autowired
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
     @Autowired
@@ -69,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .regexMatchers("/[\\S]*\\.[\\d\\w]{1,8}").permitAll()
                 .antMatchers("/admin/check", "/admin/login",
                         "/admin/register",
-                        "/file/other/upload"
+                        "/file/other/upload","/product/**"
                 )// 对登录注册要允许匿名访问
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
@@ -107,17 +106,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
         return username -> {
-            User admin = null;
+            ManagerLogin admin = null;
             try {
                 admin = adminService.getAdminByUsername(username);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             if (admin != null) {
-//                return new AdminUserDetails(admin,roleMapper.selectByuserId(admin.getId()));
-                RoleExample roleExample=new RoleExample();
-                roleExample.createCriteria().andUseridEqualTo(admin.getId());
-                List<Role> roles=roleMapper.selectByExample(roleExample);
+                List<ManagerRole> roles=managerRoleMapper.selectByUserID(admin.getManagerId());
                 return new AdminUserDetails(admin,roles);
             }
             throw new UsernameNotFoundException("用户名或密码错误");

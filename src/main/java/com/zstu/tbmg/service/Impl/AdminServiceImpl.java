@@ -1,13 +1,11 @@
 package com.zstu.tbmg.service.Impl;
 
 import com.zstu.tbmg.dto.AdminUserDetails;
-import com.zstu.tbmg.mapper.db1.RoleMapper;
-import com.zstu.tbmg.mapper.db1.UserMapper;
-import com.zstu.tbmg.mapper.db2.CustomerLoginMapper;
-import com.zstu.tbmg.pojo.Role;
-import com.zstu.tbmg.pojo.RoleExample;
-import com.zstu.tbmg.pojo.User;
-import com.zstu.tbmg.pojo.UserExample;
+import com.zstu.tbmg.dto.UserInfoDTO;
+import com.zstu.tbmg.mapper.db1.ManagerLoginMapper;
+import com.zstu.tbmg.mapper.db1.ManagerRoleMapper;
+import com.zstu.tbmg.pojo.ManagerLogin;
+import com.zstu.tbmg.pojo.ManagerRole;
 import com.zstu.tbmg.service.AdminService;
 import com.zstu.tbmg.util.JwtTokenUtil;
 import org.springframework.beans.BeanUtils;
@@ -15,57 +13,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
-
-@Transactional
 @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
-    private UserMapper userMapper;
+    private ManagerLoginMapper managerLoginMapper;
     @Autowired
-    private RoleMapper roleMapper;
-    @Autowired
-    private CustomerLoginMapper customerLoginMapper;
+    private ManagerRoleMapper managerRoleMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
     @Override
     public String login(String username, String password) throws Exception{
-        customerLoginMapper.selectByPrimaryKey(1);
         AdminUserDetails userDetails = null;
-//        User user = userMapper.selectByPrimaryKey(username);
-        User user;
-//        example = userMapper.selectByPrimaryKey(username);
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andUsernameEqualTo(username);
-        user = userMapper.selectByExample(userExample).get(0);
-        if(user == null){
-            throw new BadCredentialsException("账户或密码不正确");
+        List<ManagerLogin> userList = managerLoginMapper.selectByUsername(username);
+        if (userList.size()!=1){
+            throw new Exception("账户名不存在或者重合，请重新输入");
         }
+        ManagerLogin user;
+        user = userList.get(0);
         if (!passwordEncoder.matches(password, user.getPassword())) {
             System.out.println("your password"+password+" correct:"+ user.getPassword());
             throw new BadCredentialsException("密码不正确");
         }
-        RoleExample roleExample=new RoleExample();
-        roleExample.createCriteria().andUseridEqualTo(user.getUsername());
-        List<Role> roles=roleMapper.selectByExample(roleExample);
-        userDetails = new AdminUserDetails(user,roles);
-//            userDetails = new AdminUserDetails(user,null);
-        //   UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        //  SecurityContextHolder.getContext().setAuthentication(authentication);
-//        } catch (AuthenticationException e) {
-//            LOGGER.warn("登录异常:{}", e.getMessage());
-//        }
-//        try{
+        List<ManagerRole> roleList=managerRoleMapper.selectByUserID(user.getManagerId());
+        if (roleList.size() == 0){
+            throw new Exception("角色身份为空，请核实");
+        }
+        userDetails = new AdminUserDetails(user,roleList);
         if(userDetails == null){
             throw new BadCredentialsException("密码不正确");
         }
@@ -73,58 +56,65 @@ public class AdminServiceImpl implements AdminService {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-//        }
-//        catch (AuthenticationException e) {
-//            LOGGER.warn("登录异常:{}", e.getMessage());
-//            return null;
-//        }
         return jwtTokenUtil.generateToken(userDetails);
     }
 
 
 
     @Override
-    public User getAdminByUsername(String username)  throws Exception{
-        User example;
-//        example = userMapper.selectByPrimaryKey(username);
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andUsernameEqualTo(username);
-        example = userMapper.selectByExample(userExample).get(0);
-        return example;
+    public ManagerLogin getAdminByUsername(String username)  throws Exception{
+        List<ManagerLogin> answList = managerLoginMapper.selectByUsername(username);
+        if (answList.size()!=1){
+            throw new Exception("账户名出现重合,请重新输入");
+        }
+        return answList.get(0);
     }
 
     @Override
-    public User register(User user,String Type) throws Exception {
-        User umsAdmin = new User();
+    @Transactional
+    public ManagerLogin register(ManagerLogin user,String Type) throws Exception {
+        ManagerLogin umsAdmin = new ManagerLogin();
         BeanUtils.copyProperties(user, umsAdmin);
-        umsAdmin.setId(UUID.randomUUID().toString());
-        if (checkIfUserExist(umsAdmin.getUsername())) {
+        if (checkIfUserExist(umsAdmin.getLoginName())) {
             throw new Exception("该账号已存在");
         }
         //将密码进行加密操作
         String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);
-        userMapper.insertSelective(umsAdmin);
-        Role role=new Role();
-//        role.setCreateTime(new Date());
-        role.setUserid(umsAdmin.getId());
+        managerLoginMapper.insert(umsAdmin);
+        ManagerRole role=new ManagerRole();
+        role.setManagerId(managerLoginMapper.getAutoIncrement());
         String roleType= Type;
-        role.setName(roleType);
-        role.setType(roleType);
-        roleMapper.insertSelective(role);
+        role.setRoleName(roleType);
+        role.setRoleType(roleType);
+        role.setRoleInfo(roleType);
+        managerRoleMapper.insertSelectiveWithoutID(role);
         return umsAdmin;
     }
 
     @Override
-    public void logout(String username) throws Exception {
+    public boolean logout(String username) throws Exception {
+        /**
+         * 去他喵的登出，不想搞redis,没有登出
+         */
+        return true;
+    }
 
+    @Override
+    public UserInfoDTO getInfo(String username) throws Exception{
+        UserInfoDTO answ = new UserInfoDTO();
+        List<ManagerRole> roleList = managerRoleMapper.selectByUsername(username);
+        answ.setUsername(username);
+        answ.setRoles(roleList.stream()
+                .filter(role->role.getRoleType()!=null)
+                .map(role->role.getRoleType())
+                .collect(Collectors.toList()));
+        return answ;
     }
 
     private boolean checkIfUserExist(String username) throws Exception{
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andUsernameEqualTo(username);
-        List<User> userList = userMapper.selectByExample(userExample);
-        if (userList.size()==0){
+        List<ManagerLogin> checkList = managerLoginMapper.selectByUsername(username);
+        if (checkList.size()==0){
             return false;
         }
         return true;

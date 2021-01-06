@@ -1,7 +1,7 @@
 package com.zstu.tbmg.dto;
 
 
-import com.zstu.tbmg.pojo.User;
+import com.zstu.tbmg.pojo.ManagerLogin;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -36,9 +36,9 @@ public class UserRegisterAdminDTO {
                 '}';
     }
 
-    public User ToUser(){
-        User user= new User();
-        user.setUsername(Username);
+    public ManagerLogin ToUser(){
+        ManagerLogin user= new ManagerLogin();
+        user.setLoginName(Username);
         user.setPassword(Password);
         return user;
     }
