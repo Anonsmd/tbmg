@@ -3,6 +3,7 @@ package com.zstu.tbmg.controller;
 import com.zstu.tbmg.api.CommonResult;
 import com.zstu.tbmg.dto.ProductListDTO;
 import com.zstu.tbmg.pojo.ProductInfo;
+import com.zstu.tbmg.pojo.ProductSupplierInfo;
 import com.zstu.tbmg.service.ProductService;
 import com.zstu.tbmg.util.JwtTokenUtil;
 import io.swagger.annotations.Api;
@@ -112,6 +113,38 @@ public class ProductController {
         }
         Map<String, Boolean> answMap = new HashMap<>();
         answMap.put("isSuccess",answ);
+        return CommonResult.success(answMap);
+    }
+
+
+    @ApiOperation(value = "获取供应商列表")
+    @RequestMapping(value = "/supplierList", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> getSupplierList(){
+        List<ProductSupplierInfo> answ;
+        try {
+            answ = productService.getSupplier();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+        return CommonResult.success(answ);
+    }
+
+    @ApiOperation(value = "创建产品")
+    @RequestMapping(value = "/createOrUpdate", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> createOrUpdate(@RequestBody ProductInfo productInfo){
+        Integer answ;
+        try {
+            System.out.println(productInfo);
+            answ = productService.createOrUpdate(productInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+        Map<String, Integer> answMap = new HashMap<>();
+        answMap.put("productId",answ);
         return CommonResult.success(answMap);
     }
 }

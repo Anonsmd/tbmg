@@ -90,6 +90,20 @@ public class ProductBrandInfo implements Serializable {
      */
     private Byte brandStatus;
 
+    private Byte recommendStatus;
+
+    public Byte getRecommendStatus() {
+        return recommendStatus;
+    }
+
+    public void setRecommendStatus(Byte recommendStatus) {
+        this.recommendStatus = recommendStatus;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     /**
      * Database Column Remarks:
      *   排序

@@ -19,14 +19,21 @@ public interface ProductBrandInfoMapper {
             @Result(column = "brand_desc", property = "brandDesc"),
             @Result(column = "brand_status", property = "brandStatus"),
             @Result(column = "brand_order", property = "brandOrder"),
-            @Result(column = "modified_time", property = "modifiedTime")
+            @Result(column = "modified_time", property = "modifiedTime"),
+            @Result(column = "recommend_status", property = "recommendStatus")
     })
     List<ProductBrandInfo> selectByPage(@Param("startNum") Integer startNum, @Param("pageSize") Integer pageSize);
 
-    @Select("select * from product_brand_info")
+    @Select("select * from product_brand_info where product_brand_info.brand_name like #{brandName}")
     @ResultMap("brandInfoMap")
-    List<ProductInfo> selectAll();
+    List<ProductBrandInfo> selectAll(@Param("brandName") String brandName);
 
     @Select("select count(*) as total from product_brand_info")
     Integer getTotal();
+
+    @Update("update product_brand_info set brand_order = #{brandOrder} where brand_id = #{brandId}")
+    void updateBrandOrder(@Param("brandOrder")Byte brandOrder,@Param("brandId")Integer brandId);
+
+    @Update("update product_brand_info set recommend_status = if(recommend_status=0,1,0) where brand_id = #{brandId}")
+    void updateRecommendStatus(@Param("brandId")Integer brandId);
 }

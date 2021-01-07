@@ -2,6 +2,7 @@ package com.zstu.tbmg.service;
 
 import com.zstu.tbmg.dto.ProductListDTO;
 import com.zstu.tbmg.pojo.ProductInfo;
+import com.zstu.tbmg.pojo.ProductSupplierInfo;
 
 import java.util.List;
 
@@ -19,4 +20,8 @@ public interface ProductService {
     ProductListDTO getList(Integer pageNum, Integer pageSize, String keyword, Byte publishStatus, Byte verifyStatus, String productSn, Integer productCategory, Integer brandId) throws Exception;;
 
     ProductInfo getProduct(Integer productId) throws Exception;
+
+    List<ProductSupplierInfo> getSupplier() throws Exception;
+
+    Integer createOrUpdate(ProductInfo productInfo) throws Exception;
 }

@@ -74,4 +74,33 @@ public interface ProductInfoMapper {
 
     @Update("update product_info set audit_status=if(audit_status=0,1,0) where product_id = #{productId};")
     void updateAuditStatus(@Param("productId") Integer productId);
+
+    @Insert("insert into product_info(product_core,product_name,bar_code,brand_id," +
+            "one_category_id,two_category_id,three_category_id," +
+            "supplier_id,price,average_cost," +
+            "weight,length,height,width," +
+            "color," +
+            "production_date,shelf_life,descript) " +
+            "values(" +
+            "#{productCore},#{productName},#{barCode},#{brandId}," +
+            "#{oneCategoryId},#{twoCategoryId},#{threeCategoryId}," +
+            "#{supplierId},#{price},#{averageCost}," +
+            "#{weight},#{length},#{height},#{width}," +
+            "#{color}," +
+            "#{productionDate},#{shelfLife},#{descript}" +
+            ")")
+    void insertAll(ProductInfo productInfo);
+
+    @Update("update product_info set " +
+            "product_core=#{productCore},product_name=#{productName},bar_code=#{barCode},brand_id=#{brandId}," +
+            "one_category_id=#{oneCategoryId},two_category_id=#{twoCategoryId},three_category_id=#{threeCategoryId}," +
+            "supplier_id=#{supplierId},price=#{price},average_cost=#{averageCost}," +
+            "weight=#{weight},length=#{length},height=#{height},width=#{width}," +
+            "color=#{color},publish_status=#{publishStatus},audit_status=#{auditStatus}," +
+            "production_date=#{productionDate},shelf_life=#{shelfLife},descript=#{descript} " +
+            "where product_id=#{productId}")
+    void updateAll(ProductInfo productInfo);
+
+    @Select("select @@identity")
+    Integer getAutoIncrement();
 }

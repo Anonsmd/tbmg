@@ -2,10 +2,13 @@ package com.zstu.tbmg.service.Impl;
 
 import com.zstu.tbmg.dto.ProductListDTO;
 import com.zstu.tbmg.mapper.db2.ProductInfoMapper;
+import com.zstu.tbmg.mapper.db2.ProductSupplierInfoMapper;
 import com.zstu.tbmg.pojo.ProductInfo;
+import com.zstu.tbmg.pojo.ProductSupplierInfo;
 import com.zstu.tbmg.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,8 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductInfoMapper productInfoMapper;
+    @Autowired
+    private ProductSupplierInfoMapper productSupplierInfoMapper;
     @Override
     public boolean updatePublishStatus(List<Integer> ids) throws Exception {
         for (int i=0;i<ids.size();i++){
@@ -81,7 +86,12 @@ public class ProductServiceImpl implements ProductService {
             answ.setList(productInfoListAfter);
         }
         else{
-            answ.setList(productInfoListAfter.subList((pageNum-1)*pageSize,(pageNum-1)*pageSize+pageSize));
+            if ((pageNum-1)*pageSize+pageSize<total){
+                answ.setList(productInfoListAfter.subList((pageNum - 1) * pageSize, (pageNum - 1) * pageSize + pageSize));
+            }
+            else{
+                answ.setList(productInfoListAfter.subList((pageNum - 1) * pageSize,total));
+            }
         }
         answ.setPageNum(pageNum);
         answ.setPageSize(pageSize);
@@ -93,5 +103,23 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductInfo getProduct(Integer productId) throws Exception {
         return productInfoMapper.selectByProductId(productId);
+    }
+
+    @Override
+    public List<ProductSupplierInfo> getSupplier() throws Exception {
+        return productSupplierInfoMapper.selectAll();
+    }
+
+    @Override
+    @Transactional
+    public Integer createOrUpdate(ProductInfo productInfo) throws Exception {
+        if (productInfo.getProductId() != null && productInfo.getProductId() >0){
+            productInfoMapper.updateAll(productInfo);
+            return productInfo.getProductId();
+        }
+        else{
+            productInfoMapper.insertAll(productInfo);
+            return  productInfoMapper.getAutoIncrement();
+        }
     }
 }

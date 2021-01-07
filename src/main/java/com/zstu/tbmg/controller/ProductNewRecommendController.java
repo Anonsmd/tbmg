@@ -3,9 +3,10 @@ package com.zstu.tbmg.controller;
 import com.zstu.tbmg.api.CommonResult;
 import com.zstu.tbmg.dto.BrandListDTO;
 import com.zstu.tbmg.dto.BrandOrderDTO;
-import com.zstu.tbmg.dto.ProductListDTO;
+import com.zstu.tbmg.dto.ProductNewRecommendOrderDTO;
+import com.zstu.tbmg.dto.ProductNewRecommmendList;
 import com.zstu.tbmg.service.BrandService;
-import com.zstu.tbmg.service.ProductService;
+import com.zstu.tbmg.service.ProductNewRecommendService;
 import com.zstu.tbmg.util.JwtTokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,11 +28,11 @@ import java.util.Map;
  * @Date: 2021/1/6 14:44
  */
 @Controller
-@Api(tags = "BrandController", description = "品牌管理")
-@RequestMapping("/brand")
-public class BrandController {
+@Api(tags = "ProductNewRecommendController", description = "品牌管理")
+@RequestMapping("/newRecommend")
+public class ProductNewRecommendController {
     @Autowired
-    private BrandService brandService;
+    private ProductNewRecommendService productNewRecommendService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Value("${jwt.tokenHeader}")
@@ -48,16 +49,16 @@ public class BrandController {
         return username;
     }
 
-    @ApiOperation(value = "获取品牌列表")
+    @ApiOperation(value = "获取新品列表")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Map<String,Object>> getList(@RequestParam(value="pageNum")int pageNum, @RequestParam(value="pageSize")int pageSize,
-                                                      @RequestParam(value="brandName",required = false)String brandName,
+                                                      @RequestParam(value="productName",required = false)String productName,
                                                       @RequestParam(value="recommendStatus",required = false)Byte recommendStatus
     ){
-        BrandListDTO answ;
+        ProductNewRecommmendList answ;
         try {
-            answ = brandService.getList(pageNum,pageSize,brandName,recommendStatus);
+            answ = productNewRecommendService.getList(pageNum,pageSize,productName,recommendStatus);
         } catch (Exception e) {
             e.printStackTrace();
             return CommonResult.failed(e.getMessage());
@@ -65,13 +66,13 @@ public class BrandController {
         return CommonResult.success(answ);
     }
 
-    @ApiOperation(value = "获取品牌排序")
+    @ApiOperation(value = "设置新品排序")
     @RequestMapping(value = "/setOrder", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map<String,Object>> setOrder(@RequestBody BrandOrderDTO brandOrderDTO){
+    public ResponseEntity<Map<String,Object>> setOrder(@RequestBody ProductNewRecommendOrderDTO productNewRecommendOrderDTO){
         boolean answ;
         try {
-            answ = brandService.setOrder(brandOrderDTO);
+            answ = productNewRecommendService.setOrder(productNewRecommendOrderDTO);
         } catch (Exception e) {
             e.printStackTrace();
             return CommonResult.failed(e.getMessage());
@@ -87,7 +88,7 @@ public class BrandController {
     public ResponseEntity<Map<String,Object>> updateRecommendSatus(@RequestBody List<Integer> ids){
         boolean answ;
         try {
-            answ = brandService.updateRecommendSatus(ids);
+            answ = productNewRecommendService.updateRecommendSatus(ids);
         } catch (Exception e) {
             e.printStackTrace();
             return CommonResult.failed(e.getMessage());
