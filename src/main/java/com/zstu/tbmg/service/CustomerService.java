@@ -1,6 +1,7 @@
 package com.zstu.tbmg.service;
 
 import com.zstu.tbmg.dto.BrandListDTO;
+import com.zstu.tbmg.dto.CustomerInfoDTO;
 import com.zstu.tbmg.dto.CustomerListDTO;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface CustomerService {
     CustomerListDTO getList(int pageNum, int pageSize, String customerName);
 
     boolean updateStatus(List<Integer> ids) throws Exception;
+
+    CustomerInfoDTO getCustomerInfo(Integer customerId) throws Exception;
 }

@@ -109,5 +109,43 @@ public interface ProductInfoMapper {
             "where order_detail.order_detail_id = #{orderDetailId}")
     Integer getProductIdByOrderDetailId(@Param("orderDetailId") Integer orderDetailId);
 
-
+    @Select("select order_cart.product_amount,product_info.*,product_pic_info.pic_url,warehouse_product.sell_cnt,warehouse_product.current_cnt,warehouse_info.warehouse_name " +
+            "from order_cart " +
+            "left join product_info on order_cart.product_id = product_info.product_id " +
+            "left join product_pic_info on product_info.product_id = product_pic_info.product_id " +
+            "and product_pic_info.is_master=1 " +
+            "left join warehouse_product on product_info.product_id = warehouse_product.product_id " +
+            "left join warehouse_info on warehouse_product.warehouse_id = warehouse_info.warehouse_id " +
+            "where order_cart.customer_id = #{customerId}")
+    @Results(id = "productInfoWithPicMap2", value={
+            @Result(id = true, column = "product_id", property = "productId"),
+            @Result(column = "product_core", property = "productCore"),
+            @Result(column = "product_name", property = "productName"),
+            @Result(column = "bar_code", property = "barCode"),
+            @Result(column = "brand_id", property = "brandId"),
+            @Result(column = "one_category_id", property = "oneCategoryId"),
+            @Result(column = "two_category_id", property = "twoCategoryId"),
+            @Result(column = "three_category_id", property = "threeCategoryId"),
+            @Result(column = "supplier_id", property = "supplierId"),
+            @Result(column = "price", property = "price"),
+            @Result(column = "average_cost", property = "averageCost"),
+            @Result(column = "publish_status", property = "publishStatus"),
+            @Result(column = "audit_status", property = "auditStatus"),
+            @Result(column = "weight", property = "weight"),
+            @Result(column = "length", property = "length"),
+            @Result(column = "height", property = "height"),
+            @Result(column = "width", property = "width"),
+            @Result(column = "color", property = "color"),
+            @Result(column = "production_date", property = "productionDate"),
+            @Result(column = "shelf_life", property = "shelfLife"),
+            @Result(column = "descript", property = "descript"),
+            @Result(column = "indate", property = "indate"),
+            @Result(column = "modified_time", property = "modifiedTime"),
+            @Result(column = "pic_url", property = "pic"),
+            @Result(column = "sell_cnt", property = "sellNum"),
+            @Result(column = "current_cnt", property = "stockNum"),
+            @Result(column = "warehouse_name", property = "wareHouse"),
+            @Result(column = "product_amount", property = "productAmount")
+    })
+    List<ProductInfo> selectByCustomerId(@Param("customerId")Integer customerId);
 }

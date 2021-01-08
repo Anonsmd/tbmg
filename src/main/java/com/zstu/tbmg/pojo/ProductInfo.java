@@ -283,6 +283,16 @@ public class ProductInfo implements Serializable {
 
     private String wareHouse;
 
+    private Integer productAmount;
+
+    public Integer getProductAmount() {
+        return productAmount;
+    }
+
+    public void setProductAmount(Integer productAmount) {
+        this.productAmount = productAmount;
+    }
+
     public String getWareHouse() {
         return wareHouse;
     }

@@ -2,6 +2,7 @@ package com.zstu.tbmg.controller;
 
 import com.zstu.tbmg.api.CommonResult;
 import com.zstu.tbmg.dto.BrandListDTO;
+import com.zstu.tbmg.dto.CustomerInfoDTO;
 import com.zstu.tbmg.dto.CustomerListDTO;
 import com.zstu.tbmg.service.CustomerService;
 import com.zstu.tbmg.util.JwtTokenUtil;
@@ -76,5 +77,19 @@ public class CustomerController {
         Map<String, Boolean> answMap = new HashMap<>();
         answMap.put("isSuccess",answ);
         return CommonResult.success(answMap);
+    }
+
+    @ApiOperation(value = "更新有效状态")
+    @RequestMapping(value = "/info/{customerId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> getCustomerInfo(@PathVariable Integer customerId){
+        CustomerInfoDTO answ;
+        try {
+            answ = customerService.getCustomerInfo(customerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+        return CommonResult.success(answ);
     }
 }

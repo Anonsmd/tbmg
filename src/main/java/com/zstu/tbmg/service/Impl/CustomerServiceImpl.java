@@ -1,13 +1,12 @@
 package com.zstu.tbmg.service.Impl;
 
+import com.zstu.tbmg.dto.CustomerInfoDTO;
 import com.zstu.tbmg.dto.CustomerListDTO;
+import com.zstu.tbmg.dto.OrderDTO;
 import com.zstu.tbmg.dto.OrderMasterListDTO;
 import com.zstu.tbmg.mapper.db1.ManagerLoginMapper;
-import com.zstu.tbmg.mapper.db2.CustomerMasterMapper;
-import com.zstu.tbmg.pojo.CustomerMaster;
-import com.zstu.tbmg.pojo.CustomerMasterExample;
-import com.zstu.tbmg.pojo.OrderSmall;
-import com.zstu.tbmg.pojo.OrderSmallExample;
+import com.zstu.tbmg.mapper.db2.*;
+import com.zstu.tbmg.pojo.*;
 import com.zstu.tbmg.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,14 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerMasterMapper customerMasterMapper;
     @Autowired
     private ManagerLoginMapper managerLoginMapper;
+    @Autowired
+    private ProductInfoMapper productInfoMapper;
+    @Autowired
+    private CustomerInfMapper customerInfMapper;
+    @Autowired
+    private CustomerAddrMapper customerAddrMapper;
+    @Autowired
+    private CustomerLoginMapper customerLoginMapper;
     @Override
     public CustomerListDTO getList(int pageNum, int pageSize, String customerName) {
         CustomerMasterExample customerMasterExample = new CustomerMasterExample();
@@ -63,5 +70,32 @@ public class CustomerServiceImpl implements CustomerService {
             managerLoginMapper.updateCustomerStatus(ids.get(i));
         }
         return true;
+    }
+
+    @Override
+    public CustomerInfoDTO getCustomerInfo(Integer customerId) throws Exception {
+        CustomerInfoDTO customerInfoDTO = new CustomerInfoDTO();
+        customerInfoDTO.setCustomerId(customerId);
+        CustomerAddrExample customerAddrExample = new CustomerAddrExample();
+        customerAddrExample.createCriteria().andCustomerIdEqualTo(customerId);
+        List<CustomerAddr> customerAddrList = customerAddrMapper.selectByExample(customerAddrExample);
+        if (customerAddrList.size()!=1){
+//            throw new Exception("错误客户编号!");
+            customerInfoDTO.setCustomerAddr(null);
+        }else {
+            customerInfoDTO.setCustomerAddr(customerAddrList.get(0));
+        }
+        CustomerInfExample customerInfExample = new CustomerInfExample();
+        customerInfExample.createCriteria().andCustomerIdEqualTo(customerId);
+        List<CustomerInf> customerInfList = customerInfMapper.selectByExample(customerInfExample);
+        if (customerInfList.size()!=1){
+//            throw new Exception("错误客户编号!!");
+            customerInfoDTO.setCustomerInf(null);
+        }else {
+            customerInfoDTO.setCustomerInf(customerInfList.get(0));
+        }
+        customerInfoDTO.setCustomerLogin(customerLoginMapper.selectByPrimaryKey(customerId));
+        customerInfoDTO.setProductList(productInfoMapper.selectByCustomerId(customerId));
+        return customerInfoDTO;
     }
 }
