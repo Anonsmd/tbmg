@@ -1,11 +1,13 @@
 package com.zstu.tbmg.service.Impl;
 
 import com.zstu.tbmg.dto.AdminUserDetails;
+import com.zstu.tbmg.dto.CustomerListDTO;
+import com.zstu.tbmg.dto.ManagerListDTO;
 import com.zstu.tbmg.dto.UserInfoDTO;
 import com.zstu.tbmg.mapper.db1.ManagerLoginMapper;
 import com.zstu.tbmg.mapper.db1.ManagerRoleMapper;
-import com.zstu.tbmg.pojo.ManagerLogin;
-import com.zstu.tbmg.pojo.ManagerRole;
+import com.zstu.tbmg.mapper.db2.ManagerInfMapper;
+import com.zstu.tbmg.pojo.*;
 import com.zstu.tbmg.service.AdminService;
 import com.zstu.tbmg.util.JwtTokenUtil;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,8 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
+    private ManagerInfMapper managerInfMapper;
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Override
@@ -40,6 +45,9 @@ public class AdminServiceImpl implements AdminService {
         }
         ManagerLogin user;
         user = userList.get(0);
+        if (user.getUserStats() != 1){
+            throw new Exception("账户被弃用");
+        }
         if (!passwordEncoder.matches(password, user.getPassword())) {
             System.out.println("your password"+password+" correct:"+ user.getPassword());
             throw new BadCredentialsException("密码不正确");
@@ -110,6 +118,49 @@ public class AdminServiceImpl implements AdminService {
                 .map(role->role.getRoleType())
                 .collect(Collectors.toList()));
         return answ;
+    }
+
+    @Override
+    @Transactional
+    public ManagerListDTO getList(int pageNum, int pageSize, String managerName) throws Exception {
+        ManagerInfExample managerInfExample = new ManagerInfExample();
+        ManagerInfExample.Criteria criteria = managerInfExample.createCriteria();
+        if (managerName!=null && managerName.length()>0){
+            criteria.andManagerNameLike('%'+managerName+'%');
+        }
+        List<ManagerInf> answList = new ArrayList<>();
+        answList = managerInfMapper.selectByExample(managerInfExample);
+        int total = answList.size();
+        ManagerListDTO answ = new ManagerListDTO();
+        if (total<=pageSize){
+            answ.setList(answList);
+        }
+        else{
+            if ((pageNum-1)*pageSize+pageSize<total){
+                answ.setList(answList.subList((pageNum - 1) * pageSize, (pageNum - 1) * pageSize + pageSize));
+            }
+            else{
+                answ.setList(answList.subList((pageNum - 1) * pageSize,total));
+            }
+
+        }
+        for (int i=0;i<answ.getList().size();i++){
+            answ.getList().get(i).setUserStats(managerLoginMapper.selectUserStatsByUsername( answ.getList().get(i).getLoginName()));
+        }
+        answ.setPageNum(pageNum);
+        answ.setPageSize(pageSize);
+        answ.setTotal(total);
+        answ.setTotalPage((total+pageSize-1)/pageSize);
+        return answ;
+    }
+
+    @Override
+    @Transactional
+    public boolean updateStatus(List<String> names) throws Exception {
+        for (int i=0;i<names.size();i++){
+            managerLoginMapper.updateManagerStatus(names.get(i));
+        }
+        return true;
     }
 
     private boolean checkIfUserExist(String username) throws Exception{

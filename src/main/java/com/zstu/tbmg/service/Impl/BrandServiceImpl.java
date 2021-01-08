@@ -9,6 +9,7 @@ import com.zstu.tbmg.pojo.ProductInfo;
 import com.zstu.tbmg.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    @Transactional
     public boolean updateRecommendSatus(List<Integer> ids) throws Exception {
         for (int i=0;i<ids.size();i++){
             productBrandInfoMapper.updateRecommendStatus(ids.get(i));

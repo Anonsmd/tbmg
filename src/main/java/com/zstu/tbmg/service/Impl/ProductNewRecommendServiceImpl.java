@@ -9,6 +9,7 @@ import com.zstu.tbmg.pojo.ProductNewRecommend;
 import com.zstu.tbmg.service.ProductNewRecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +65,14 @@ public class ProductNewRecommendServiceImpl implements ProductNewRecommendServic
     }
 
     @Override
+    @Transactional
     public boolean setOrder(ProductNewRecommendOrderDTO productNewRecommendOrderDTO) throws Exception {
         productNewRecommendMapper.updatenewRecommendOrder(productNewRecommendOrderDTO.getProductOrder(),productNewRecommendOrderDTO.getNewRecommendId());
         return true;
     }
 
     @Override
+    @Transactional
     public boolean updateRecommendSatus(List<Integer> ids) throws Exception {
         for (int i=0;i<ids.size();i++){
             productNewRecommendMapper.updateRecommendStatus(ids.get(i));

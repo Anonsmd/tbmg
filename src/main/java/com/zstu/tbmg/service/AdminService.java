@@ -2,6 +2,7 @@ package com.zstu.tbmg.service;
 
 
 
+import com.zstu.tbmg.dto.ManagerListDTO;
 import com.zstu.tbmg.dto.UserInfoDTO;
 import com.zstu.tbmg.pojo.ManagerLogin;
 
@@ -16,4 +17,8 @@ public interface AdminService {
     boolean logout(String username) throws Exception;
 
     UserInfoDTO getInfo(String username) throws Exception;
+
+    ManagerListDTO getList(int pageNum, int pageSize, String managerName) throws Exception;
+
+    boolean updateStatus(List<String> names) throws Exception;
 }

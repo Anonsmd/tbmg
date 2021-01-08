@@ -22,9 +22,18 @@ public interface ManagerLoginMapper {
     @Insert("insert into manager_login(login_name,password) values(#{loginName},#{password});")
     void insert(ManagerLogin user);
 
-    @Select("select manager_id from manager_login where loginName = #{username};")
+    @Select("select manager_id from manager_login where login_name = #{username};")
     List<String> selectManagerIDByUsername(@Param("username")String username);
 
     @Select("select @@identity")
     Integer getAutoIncrement();
+
+    @Update("update customer_login set user_stats = if(user_stats=0,1,0) where customer_id = #{customerId}")
+    void updateCustomerStatus(@Param("customerId")Integer customerId);
+
+    @Update("update manager_login set user_stats = if(user_stats=0,1,0) where login_name = #{username}")
+    void updateManagerStatus(@Param("username")String username);
+
+    @Select("select user_stats from manager_login where login_name = #{username};")
+    Byte selectUserStatsByUsername(@Param("username")String username);
 }

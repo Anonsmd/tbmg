@@ -2,10 +2,7 @@ package com.zstu.tbmg.controller;
 
 
 import com.zstu.tbmg.api.CommonResult;
-import com.zstu.tbmg.dto.UserInfoDTO;
-import com.zstu.tbmg.dto.UserLoginDTO;
-import com.zstu.tbmg.dto.UserManageDTO;
-import com.zstu.tbmg.dto.UserRegisterAdminDTO;
+import com.zstu.tbmg.dto.*;
 import com.zstu.tbmg.pojo.ManagerLogin;
 import com.zstu.tbmg.service.AdminService;
 import com.zstu.tbmg.util.JwtTokenUtil;
@@ -16,15 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -129,8 +124,37 @@ public class BaseController {
 
 
 
+    @ApiOperation(value = "获取管理员列表")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> getList(@RequestParam(value="pageNum")int pageNum, @RequestParam(value="pageSize")int pageSize,
+                                                      @RequestParam(value="managerName",required = false)String managerName
+    ){
+        ManagerListDTO answ;
+        try {
+            answ = adminService.getList(pageNum,pageSize,managerName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+        return CommonResult.success(answ);
+    }
 
-
+    @ApiOperation(value = "更新有效状态")
+    @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Map<String,Object>> updateStatus(@RequestBody List<String> names){
+        boolean answ;
+        try {
+            answ = adminService.updateStatus(names);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+        Map<String, Boolean> answMap = new HashMap<>();
+        answMap.put("isSuccess",answ);
+        return CommonResult.success(answMap);
+    }
 
     @ApiOperation(value = "ADMIN")
     @RequestMapping(value = "/ADMIN", method = RequestMethod.GET)
