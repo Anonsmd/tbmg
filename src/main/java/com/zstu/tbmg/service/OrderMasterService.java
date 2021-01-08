@@ -16,5 +16,5 @@ public interface OrderMasterService {
 
     boolean updateShippingInfo(ShippingUpdateDTO shippingUpdateDTO) throws Exception;
 
-    OrderDTO getDetailInfo(Integer orderDTO) throws Exception;
+    OrderDTO getDetailInfo(Integer orderId) throws Exception;
 }

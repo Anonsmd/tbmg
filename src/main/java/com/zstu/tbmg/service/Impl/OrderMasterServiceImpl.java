@@ -91,7 +91,25 @@ public class OrderMasterServiceImpl implements OrderMasterService {
     }
 
     @Override
-    public OrderDTO getDetailInfo(Integer orderDTO) throws Exception {
-        return null;
+    public OrderDTO getDetailInfo(Integer orderId) throws Exception {
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setOrderDetailId(orderId);
+        OrderDetailExample orderDetailExample = new OrderDetailExample();
+        orderDetailExample.createCriteria().andOrderDetailIdEqualTo(orderId);
+        List<OrderDetail> orderDetailList = orderDetailMapper.selectByExample(orderDetailExample);
+        if (orderDetailList.size()!=1){
+            throw new Exception("错误订单号!");
+        }
+        orderDTO.setOrderDetail(orderDetailList.get(0));
+        OrderShippingInfoExample orderShippingInfoExample = new OrderShippingInfoExample();
+        orderShippingInfoExample.createCriteria().andOrderDetailIdEqualTo(orderId);
+        List<OrderShippingInfo> orderShippingInfoList = orderShippingInfoMapper.selectByExample(orderShippingInfoExample);
+        if (orderShippingInfoList.size()!=1){
+            throw new Exception("错误订单号!!");
+        }
+        orderDTO.setOrderShippingInfo(orderShippingInfoList.get(0));
+        Integer productId = productInfoMapper.getProductIdByOrderDetailId(orderId );
+        orderDTO.setProductInfo(productInfoMapper.selectByProductId(productId));
+        return orderDTO;
     }
 }

@@ -103,4 +103,9 @@ public interface ProductInfoMapper {
 
     @Select("select @@identity")
     Integer getAutoIncrement();
+
+    @Select("select product_id from order_detail " +
+            "left join order_master on order_master.order_detail_id = order_detail.order_detail_id " +
+            "where order_detail.order_detail_id = #{orderDetailId}")
+    Integer getProductIdByOrderDetailId(@Param("orderDetailId") Integer orderDetailId);
 }

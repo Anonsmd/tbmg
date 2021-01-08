@@ -99,7 +99,7 @@ public class OrderController {
     }
 
     @ApiOperation(value = "获取订单具体信息")
-    @RequestMapping(value = "/getDetailInfo/{orderDTO}", method = RequestMethod.POST)
+    @RequestMapping(value = "/getDetailInfo/{orderDTO}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Map<String,Object>> getDetailInfo(@PathVariable Integer orderDTO){
         OrderDTO answ;
